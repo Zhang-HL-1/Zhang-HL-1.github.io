@@ -63,3 +63,16 @@ async function initJournal() {
     postsElement.replaceChildren(node('p', '文章暂时未能加载，请刷新页面重试。', 'empty'));
   }
 }
+
+const progress = document.querySelector('.reading-progress');
+if (progress) {
+  let scheduled = false;
+  function updateProgress() {
+    const distance = document.documentElement.scrollHeight - innerHeight;
+    progress.style.transform = 'scaleX(' + (distance > 0 ? Math.min(1, Math.max(0, scrollY / distance)) : 0) + ')';
+    scheduled = false;
+  }
+  addEventListener('scroll', () => { if (!scheduled) { scheduled = true; requestAnimationFrame(updateProgress); } }, { passive: true });
+  addEventListener('resize', updateProgress);
+  updateProgress();
+}
